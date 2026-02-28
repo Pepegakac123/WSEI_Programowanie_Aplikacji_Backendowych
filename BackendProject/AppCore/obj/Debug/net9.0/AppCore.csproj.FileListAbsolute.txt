@@ -1,0 +1,12 @@
+D:\Users\kacper.adamczyk\Documents\WSEI_Programowanie_Aplikacji_Backendowych\BackendProject\AppCore\bin\Debug\net9.0\AppCore.deps.json
+D:\Users\kacper.adamczyk\Documents\WSEI_Programowanie_Aplikacji_Backendowych\BackendProject\AppCore\bin\Debug\net9.0\AppCore.dll
+D:\Users\kacper.adamczyk\Documents\WSEI_Programowanie_Aplikacji_Backendowych\BackendProject\AppCore\bin\Debug\net9.0\AppCore.pdb
+D:\Users\kacper.adamczyk\Documents\WSEI_Programowanie_Aplikacji_Backendowych\BackendProject\AppCore\obj\Debug\net9.0\AppCore.GeneratedMSBuildEditorConfig.editorconfig
+D:\Users\kacper.adamczyk\Documents\WSEI_Programowanie_Aplikacji_Backendowych\BackendProject\AppCore\obj\Debug\net9.0\AppCore.AssemblyInfoInputs.cache
+D:\Users\kacper.adamczyk\Documents\WSEI_Programowanie_Aplikacji_Backendowych\BackendProject\AppCore\obj\Debug\net9.0\AppCore.AssemblyInfo.cs
+D:\Users\kacper.adamczyk\Documents\WSEI_Programowanie_Aplikacji_Backendowych\BackendProject\AppCore\obj\Debug\net9.0\AppCore.csproj.CoreCompileInputs.cache
+D:\Users\kacper.adamczyk\Documents\WSEI_Programowanie_Aplikacji_Backendowych\BackendProject\AppCore\obj\Debug\net9.0\AppCore.sourcelink.json
+D:\Users\kacper.adamczyk\Documents\WSEI_Programowanie_Aplikacji_Backendowych\BackendProject\AppCore\obj\Debug\net9.0\AppCore.dll
+D:\Users\kacper.adamczyk\Documents\WSEI_Programowanie_Aplikacji_Backendowych\BackendProject\AppCore\obj\Debug\net9.0\refint\AppCore.dll
+D:\Users\kacper.adamczyk\Documents\WSEI_Programowanie_Aplikacji_Backendowych\BackendProject\AppCore\obj\Debug\net9.0\AppCore.pdb
+D:\Users\kacper.adamczyk\Documents\WSEI_Programowanie_Aplikacji_Backendowych\BackendProject\AppCore\obj\Debug\net9.0\ref\AppCore.dll
