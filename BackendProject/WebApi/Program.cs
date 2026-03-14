@@ -3,7 +3,7 @@ using Infrastructure.Memory;
 
 namespace WebApi;
 
-public class Program
+public class mProgram
 {
     public static void Main(string[] args)
     {
@@ -11,7 +11,9 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddAuthorization();
-        builder.Services.AddScoped<ICarRepository, MemoryCarRepository>();
+        builder.Services.AddScoped<IVehicleRepository, InMemoryVehicleRepository>();
+        builder.Services.AddScoped<IParkingSessionRepository, InMemoryParkingSessionRepository>();
+        builder.Services.AddScoped<IParkingGateRepository, InMemoryParkingGateRepository>();
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
@@ -28,13 +30,12 @@ public class Program
 
         app.UseAuthorization();
 
-       
-
-        app.MapGet("/api/cars/{number}", async (ICarRepository repository, string number,HttpContext context) =>
+        app.MapGet("/api/vehicles/{licensePlate}", async (IVehicleRepository repository, string licensePlate) =>
             {
-                return await repository.FindByPlateNumber(number);
+                var vehicle = await repository.FindByLicensePlateAsync(licensePlate);
+                return vehicle is not null ? Results.Ok(vehicle) : Results.NotFound();
             })
-            .WithName("GetWeatherForecast");
+            .WithName("GetVehicleByLicensePlate");
 
         app.Run();
     }

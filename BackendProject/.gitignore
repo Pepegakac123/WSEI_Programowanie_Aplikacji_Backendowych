@@ -1,0 +1,38 @@
+## Visual Studio / JetBrains Rider / .NET
+[Bb]in/
+[Oo]bj/
+out/
+[Rr]elease/
+[Dd]ebug/
+
+## JetBrains Rider
+.idea/
+*.sln.iml
+
+## Visual Studio
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## OS files
+.DS_Store
+Thumbs.db
+
+## .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## WebApi / Settings
+appsettings.Development.json
+# Często ignorujemy Development.json jeśli zawiera wrażliwe dane, 
+# ale w projektach studenckich zazwyczaj się go zostawia dla ułatwienia.
+# Jeśli chcesz go ignorować, odkomentuj linię wyżej.
