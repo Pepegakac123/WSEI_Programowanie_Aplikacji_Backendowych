@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "IT4CAwu7jto=",
+  "dgSpecHash": "uRlMay19r1M=",
   "success": true,
-  "projectFilePath": "D:\\Users\\kacper.adamczyk\\Documents\\WSEI_Programowanie_Aplikacji_Backendowych\\BackendProject\\Infrastructure\\Infrastructure.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "/home/kacper/learning/WSEI_Programowanie_Aplikacji_Backendowych/BackendProject/Infrastructure/Infrastructure.csproj",
+  "expectedPackageFiles": [
+    "/home/kacper/.nuget/packages/microsoft.netcore.app.ref/9.0.12/microsoft.netcore.app.ref.9.0.12.nupkg.sha512",
+    "/home/kacper/.nuget/packages/microsoft.aspnetcore.app.ref/9.0.12/microsoft.aspnetcore.app.ref.9.0.12.nupkg.sha512"
+  ],
   "logs": []
 }

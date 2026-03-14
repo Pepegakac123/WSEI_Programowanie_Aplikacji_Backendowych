@@ -1,11 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "4FqwZR00l9o=",
+  "dgSpecHash": "7KO1y+bxBh0=",
   "success": true,
-  "projectFilePath": "D:\\Users\\kacper.adamczyk\\Documents\\WSEI_Programowanie_Aplikacji_Backendowych\\BackendProject\\WebApi\\WebApi.csproj",
+  "projectFilePath": "/home/kacper/learning/WSEI_Programowanie_Aplikacji_Backendowych/BackendProject/WebApi/WebApi.csproj",
   "expectedPackageFiles": [
-    "D:\\Users\\kacper.adamczyk\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.8\\microsoft.aspnetcore.openapi.9.0.8.nupkg.sha512",
-    "D:\\Users\\kacper.adamczyk\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+    "/home/kacper/.nuget/packages/microsoft.aspnetcore.openapi/9.0.8/microsoft.aspnetcore.openapi.9.0.8.nupkg.sha512",
+    "/home/kacper/.nuget/packages/microsoft.openapi/1.6.17/microsoft.openapi.1.6.17.nupkg.sha512",
+    "/home/kacper/.nuget/packages/microsoft.netcore.app.ref/9.0.12/microsoft.netcore.app.ref.9.0.12.nupkg.sha512",
+    "/home/kacper/.nuget/packages/microsoft.aspnetcore.app.ref/9.0.12/microsoft.aspnetcore.app.ref.9.0.12.nupkg.sha512",
+    "/home/kacper/.nuget/packages/microsoft.netcore.app.host.linux-x64/9.0.12/microsoft.netcore.app.host.linux-x64.9.0.12.nupkg.sha512"
   ],
   "logs": []
 }
