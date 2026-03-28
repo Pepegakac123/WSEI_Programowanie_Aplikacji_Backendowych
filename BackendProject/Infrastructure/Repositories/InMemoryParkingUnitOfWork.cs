@@ -2,7 +2,7 @@
 
 namespace Infrastructure.Repositories;
 
-public class MemoryParkingUnitOfWork(
+public class InMemoryParkingUnitOfWork(
     IVehicleRepository vehicles,
     IParkingSessionRepository sessions,
     IParkingGateRepository gates

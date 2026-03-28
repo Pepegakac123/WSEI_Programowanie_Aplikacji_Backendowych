@@ -1,5 +1,7 @@
 using AppCore.Repositories;
+using AppCore.Services;
 using Infrastructure.Repositories;
+using Infrastructure.Services;
 
 namespace WebApi;
 
@@ -11,9 +13,12 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddAuthorization();
-        builder.Services.AddScoped<IVehicleRepository, InMemoryVehicleRepository>();
-        builder.Services.AddScoped<IParkingSessionRepository, InMemoryParkingSessionRepository>();
-        builder.Services.AddScoped<IParkingGateRepository, InMemoryParkingGateRepository>();
+        builder.Services.AddControllers(); 
+        builder.Services.AddSingleton<IVehicleRepository, InMemoryVehicleRepository>();
+        builder.Services.AddSingleton<IParkingSessionRepository, InMemoryParkingSessionRepository>();
+        builder.Services.AddSingleton<IParkingGateRepository, InMemoryParkingGateRepository>();
+        builder.Services.AddSingleton<IParkingGateService, MemoryParkingGateService>();
+        builder.Services.AddSingleton<IParkingUnitOfWork, InMemoryParkingUnitOfWork>();
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
@@ -29,7 +34,7 @@ public class Program
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
-
+        app.MapControllers();  
         app.MapGet("/api/vehicles/{licensePlate}", async (IVehicleRepository repository, string licensePlate) =>
             {
                 var vehicle = await repository.FindByLicensePlateAsync(licensePlate);
