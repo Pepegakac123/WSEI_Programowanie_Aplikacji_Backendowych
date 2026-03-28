@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using AppCore.Models;
 using AppCore.Repositories;
 
-namespace Infrastructure.Memory;
+namespace Infrastructure.Repositories;
 
 public class InMemoryParkingSessionRepository : MemoryGenericRepository<ParkingSession>, IParkingSessionRepository
 {

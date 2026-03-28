@@ -1,9 +1,9 @@
 using AppCore.Repositories;
-using Infrastructure.Memory;
+using Infrastructure.Repositories;
 
 namespace WebApi;
 
-public class mProgram
+public class Program
 {
     public static void Main(string[] args)
     {

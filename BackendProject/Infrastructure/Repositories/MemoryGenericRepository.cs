@@ -6,7 +6,7 @@ using AppCore.Models;
 using AppCore.Repositories;
 using AppCore.Dto;
 
-namespace Infrastructure.Memory;
+namespace Infrastructure.Repositories;
 
 public class MemoryGenericRepository<T> : IGenericRepositoryAsync<T> where T : EntityBase
 {
