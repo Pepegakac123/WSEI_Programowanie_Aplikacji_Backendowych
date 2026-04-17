@@ -5,12 +5,14 @@ namespace Infrastructure.Repositories;
 public class InMemoryParkingUnitOfWork(
     IVehicleRepository vehicles,
     IParkingSessionRepository sessions,
-    IParkingGateRepository gates
+    IParkingGateRepository gates,
+    IParkingTariffRepository tariffs
 ): IParkingUnitOfWork
 {
     public IVehicleRepository Vehicles => vehicles;
     public IParkingGateRepository Gates => gates;
     public IParkingSessionRepository Sessions => sessions;
+    public IParkingTariffRepository Tariffs => tariffs;
     
     public Task<int> SaveChangesAsync()
     {

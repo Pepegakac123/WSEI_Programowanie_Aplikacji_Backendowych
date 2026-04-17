@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AppCore.Models;
 using AppCore.Repositories;
-using Infrastructure.Memory;
+using Infrastructure.Repositories;
 using Xunit;
 
 namespace UnitTest;

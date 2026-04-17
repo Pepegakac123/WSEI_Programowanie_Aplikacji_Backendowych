@@ -1,5 +1,7 @@
 using System;
 
+using AppCore.Dto;
+
 namespace AppCore.Models;
 
 public class ParkingSession : EntityBase
@@ -11,4 +13,25 @@ public class ParkingSession : EntityBase
     public DateTime? ExitTime { get; set; }
     public decimal? ParkingFee { get; set; }
     public bool IsActive { get; set; }
+
+    public static implicit operator ActiveParkingSessionDto(ParkingSession entity) =>
+        new(
+            entity.Id,
+            (VehicleDto)entity.Vehicle,
+            entity.GateName,
+            entity.EntryTime,
+            DateTime.Now - entity.EntryTime
+        );
+
+    public static implicit operator ParkingSessionHistoryDto(ParkingSession entity) =>
+        new(
+            entity.Id,
+            (VehicleDto)entity.Vehicle,
+            entity.GateName,
+            entity.EntryTime,
+            entity.ExitTime,
+            entity.ExitTime - entity.EntryTime,
+            entity.ParkingFee,
+            entity.IsActive
+        );
 }

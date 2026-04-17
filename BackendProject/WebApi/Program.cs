@@ -17,6 +17,7 @@ public class Program
         builder.Services.AddSingleton<IVehicleRepository, InMemoryVehicleRepository>();
         builder.Services.AddSingleton<IParkingSessionRepository, InMemoryParkingSessionRepository>();
         builder.Services.AddSingleton<IParkingGateRepository, InMemoryParkingGateRepository>();
+        builder.Services.AddSingleton<IParkingTariffRepository, InMemoryParkingTariffRepository>();
         builder.Services.AddSingleton<IParkingGateService, MemoryParkingGateService>();
         builder.Services.AddSingleton<IParkingUnitOfWork, InMemoryParkingUnitOfWork>();
 
