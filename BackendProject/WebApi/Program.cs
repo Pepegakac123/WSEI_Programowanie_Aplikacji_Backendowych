@@ -2,6 +2,7 @@ using AppCore.Repositories;
 using AppCore.Services;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
+using AppCore;
 
 namespace WebApi;
 
@@ -13,6 +14,7 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddAuthorization();
+        builder.Services.AddAppCoreModule(builder.Configuration);
         builder.Services.AddControllers(); 
         builder.Services.AddSingleton<IVehicleRepository, InMemoryVehicleRepository>();
         builder.Services.AddSingleton<IParkingSessionRepository, InMemoryParkingSessionRepository>();

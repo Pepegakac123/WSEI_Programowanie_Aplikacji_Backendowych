@@ -8,5 +8,6 @@ public interface IParkingGateService
     Task<PagedResult<ParkingGateDto>> GetPaged(int page, int pageSize);
     Task<ParkingGateDto?> GetByName(string name);
     Task<ParkingGateDto> Add(CreateGateDto newGate);
+    Task<ParkingGateDto?> Update(Guid id, UpdateGateDto updateGate);
     Task ChangeOperationalStatus(Guid id, bool isOperational);
 }

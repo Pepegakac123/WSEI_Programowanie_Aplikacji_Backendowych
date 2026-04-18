@@ -17,26 +17,43 @@ public class GatesController(IParkingGateService service) : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById(Guid id)
+    public async Task<IActionResult> GetGate(Guid id)
     {
-        var gate = await service.GetById(id);
-        if (gate == null) return NotFound();
-        return Ok(gate);
+        var dto = await service.GetById(id);
+        if (dto == null)
+        {
+            return NotFound();
+        }
+        return Ok(dto);
     }
 
     [HttpGet("name/{name}")]
     public async Task<IActionResult> GetByName(string name)
     {
-        var gate = await service.GetByName(name);
-        if (gate == null) return NotFound();
-        return Ok(gate);
+        var dto = await service.GetByName(name);
+        if (dto == null)
+        {
+            return NotFound();
+        }
+        return Ok(dto);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Add([FromBody] CreateGateDto createGateDto)
+    public async Task<IActionResult> CreateGate([FromBody] CreateGateDto dto)
     {
-        var gate = await service.Add(createGateDto);
-        return CreatedAtAction(nameof(GetById), new { id = gate.Id }, gate);
+        var result = await service.Add(dto);
+        return CreatedAtAction(nameof(GetGate), new { id = result.Id }, result);
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateGate(Guid id, [FromBody] UpdateGateDto dto)
+    {
+        var result = await service.Update(id, dto);
+        if (result == null)
+        {
+            return NotFound();
+        }
+        return Ok(result);
     }
 
     [HttpPatch("{id:guid}/status")]

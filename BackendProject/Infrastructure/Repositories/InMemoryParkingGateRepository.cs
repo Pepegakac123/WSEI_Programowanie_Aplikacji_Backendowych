@@ -12,7 +12,7 @@ public class InMemoryParkingGateRepository : MemoryGenericRepository<ParkingGate
     {
         var gate1 = new ParkingGate()
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.Parse("52f48199-bc0a-477c-afbe-78b59aced549"),
             Name = "Entry Gate",
             Type = GateType.Entry,
             Location = "Main Gate",
@@ -22,7 +22,7 @@ public class InMemoryParkingGateRepository : MemoryGenericRepository<ParkingGate
         
         var gate2 = new ParkingGate()
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.Parse("1984c840-e04a-464f-8cad-861ef2e7abd1"),
             Name = "Exit Gate",
             Type = GateType.Exit,
             Location = "Back Gate",

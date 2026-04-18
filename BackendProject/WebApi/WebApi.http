@@ -1,0 +1,51 @@
+@WebApi_HostAddress=http://localhost:5167
+
+# 1. Pobierz wszystkie bramki
+GET {{WebApi_HostAddress}}/api/gates
+Accept: application/json
+
+###
+
+# 2. Pobierz bramkę wjazdową (Stałe ID: Entry Gate)
+GET {{WebApi_HostAddress}}/api/gates/52f48199-bc0a-477c-afbe-78b59aced549
+Accept: application/json
+
+###
+
+# 3. Pobierz bramkę wyjazdową (Stałe ID: Exit Gate)
+GET {{WebApi_HostAddress}}/api/gates/1984c840-e04a-464f-8cad-861ef2e7abd1
+Accept: application/json
+
+###
+
+# 4. Dodaj nową bramkę
+POST {{WebApi_HostAddress}}/api/gates
+Content-Type: application/json
+
+{
+  "name": "Brama A1",
+  "location" : "Sektor 1",
+  "type": "Entry"
+}
+
+###
+
+# 4.2. Dodaj nową bramkę zły name
+POST {{WebApi_HostAddress}}/api/gates
+Content-Type: application/json
+
+{
+  "name": "Brama_A1",
+  "location" : "Sektor 1",
+  "type": "Entry"
+}
+###
+
+# 5. Edytuj bramkę wjazdową
+PUT {{WebApi_HostAddress}}/api/gates/52f48199-bc0a-477c-afbe-78b59aced549
+Content-Type: application/json
+
+{
+  "name": "Wjazd Glowny",
+  "type": "Both"
+}

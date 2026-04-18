@@ -15,3 +15,8 @@ public record CreateGateDto(
     string Type,
     string Location
 );
+
+public record UpdateGateDto(
+    string Name,
+    string Type
+);
