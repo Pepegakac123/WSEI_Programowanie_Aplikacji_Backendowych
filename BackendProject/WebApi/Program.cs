@@ -3,7 +3,7 @@ using AppCore.Services;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using AppCore;
-
+using WebApi.Middleware;
 namespace WebApi;
 
 public class Program
@@ -20,9 +20,12 @@ public class Program
         builder.Services.AddSingleton<IParkingSessionRepository, InMemoryParkingSessionRepository>();
         builder.Services.AddSingleton<IParkingGateRepository, InMemoryParkingGateRepository>();
         builder.Services.AddSingleton<IParkingTariffRepository, InMemoryParkingTariffRepository>();
+        builder.Services.AddSingleton<ICameraCaptureRepository, InMemoryCameraCaptureRepository>();
         builder.Services.AddSingleton<IParkingGateService, MemoryParkingGateService>();
         builder.Services.AddSingleton<IParkingUnitOfWork, InMemoryParkingUnitOfWork>();
 
+        builder.Services.AddExceptionHandler<ProblemDetailsExceptionHandler>();    
+        builder.Services.AddProblemDetails();
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
 
@@ -37,6 +40,7 @@ public class Program
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
+        app.UseExceptionHandler();
         app.MapControllers();  
         app.MapGet("/api/vehicles/{licensePlate}", async (IVehicleRepository repository, string licensePlate) =>
             {

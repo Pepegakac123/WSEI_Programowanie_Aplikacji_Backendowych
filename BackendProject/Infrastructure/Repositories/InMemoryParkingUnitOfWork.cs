@@ -6,14 +6,15 @@ public class InMemoryParkingUnitOfWork(
     IVehicleRepository vehicles,
     IParkingSessionRepository sessions,
     IParkingGateRepository gates,
-    IParkingTariffRepository tariffs
+    IParkingTariffRepository tariffs ,
+    ICameraCaptureRepository cameraCaptures
 ): IParkingUnitOfWork
 {
     public IVehicleRepository Vehicles => vehicles;
     public IParkingGateRepository Gates => gates;
     public IParkingSessionRepository Sessions => sessions;
     public IParkingTariffRepository Tariffs => tariffs;
-    
+    public ICameraCaptureRepository CameraCaptures => cameraCaptures;
     public Task<int> SaveChangesAsync()
     {
         return Task.FromResult(0);

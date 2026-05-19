@@ -15,3 +15,12 @@ public class CameraCaptureValidator : AbstractValidator<CameraCaptureDto>
             .NotEmpty().WithMessage("Nazwa bramki jest wymagana.");
     }
 }
+
+public class CreateCameraCaptureValidator : AbstractValidator<CreateCameraCaptureDto>
+{
+    public CreateCameraCaptureValidator()
+    {
+        RuleFor(x => x.LicensePlate).NotEmpty().MaximumLength(15);
+        RuleFor(x => x.CaptureType).NotEmpty();
+    }
+}

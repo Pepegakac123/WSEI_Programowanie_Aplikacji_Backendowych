@@ -1,4 +1,5 @@
 using AppCore.Dto;
+using AppCore.Exceptions;
 using AppCore.Models;
 using AppCore.Services;
 using AppCore.Repositories;
@@ -74,6 +75,62 @@ public class MemoryParkingGateService(IParkingUnitOfWork unit, IMapper mapper) :
             entity.IsOperational = isOperational;
             
             await unit.Gates.UpdateAsync(entity);
+            await unit.SaveChangesAsync();
+        }
+    }
+
+    public async Task<CameraCaptureDto> AddCapture(Guid gateId, CreateCameraCaptureDto dto)
+    {
+        var gate = await unit.Gates.FindByIdAsync(gateId);
+        
+        if (gate == null)
+        {
+            throw new GateNotFoundException($"Gate with id={gateId} not found!");
+        }
+
+        var capture = new CameraCapture
+        {
+            Id = Guid.NewGuid(),
+            LicensePlate = dto.LicensePlate,
+            DetectedBrand = dto.Brand,
+            DetectedColor = dto.Color,
+            ImagePath = dto.ImagePath,
+            CaptureType = Enum.Parse<CaptureType>(dto.CaptureType, true),
+            CapturedAt = DateTime.UtcNow,
+            GateName = gate.Name
+        };
+
+        await unit.CameraCaptures.AddAsync(capture);
+        gate.CameraCaptures.Add(capture);
+    
+        await unit.SaveChangesAsync();
+
+        return capture;
+    }
+
+    public async Task<IEnumerable<CameraCaptureDto>> GetCaptures(Guid gateId)
+    {
+        var entity = await unit.Gates.FindByIdAsync(gateId);
+        if (entity is null)
+        {
+            throw new GateNotFoundException($"Gate with id={gateId} not found!");
+        }
+        return entity.CameraCaptures.Select(c => (CameraCaptureDto)c);
+    }
+
+    public async Task DeleteCapture(Guid gateId, Guid captureId)
+    {
+        var entity = await unit.Gates.FindByIdAsync(gateId);
+        if (entity is null)
+        {
+            throw new GateNotFoundException($"Gate with id={gateId} not found!");
+        }
+
+        var capture = entity.CameraCaptures.FirstOrDefault(c => c.Id == captureId);
+        if (capture is not null)
+        {
+            entity.CameraCaptures.Remove(capture);
+            await unit.CameraCaptures.RemoveByIdAsync(captureId);
             await unit.SaveChangesAsync();
         }
     }
