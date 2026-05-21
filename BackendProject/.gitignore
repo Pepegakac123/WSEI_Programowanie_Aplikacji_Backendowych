@@ -33,6 +33,5 @@ artifacts/
 
 ## WebApi / Settings
 appsettings.Development.json
-# Często ignorujemy Development.json jeśli zawiera wrażliwe dane, 
-# ale w projektach studenckich zazwyczaj się go zostawia dla ułatwienia.
-# Jeśli chcesz go ignorować, odkomentuj linię wyżej.
+## Dokumentacja
+ARCHITECTURE_GUIDE.md

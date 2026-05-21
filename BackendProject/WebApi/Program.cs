@@ -1,8 +1,8 @@
 using AppCore.Repositories;
 using AppCore.Services;
 using Infrastructure.Repositories;
-using Infrastructure.Services;
 using AppCore;
+using Infrastructure;
 using WebApi.Middleware;
 namespace WebApi;
 
@@ -16,13 +16,9 @@ public class Program
         builder.Services.AddAuthorization();
         builder.Services.AddAppCoreModule(builder.Configuration);
         builder.Services.AddControllers(); 
-        builder.Services.AddSingleton<IVehicleRepository, InMemoryVehicleRepository>();
-        builder.Services.AddSingleton<IParkingSessionRepository, InMemoryParkingSessionRepository>();
-        builder.Services.AddSingleton<IParkingGateRepository, InMemoryParkingGateRepository>();
-        builder.Services.AddSingleton<IParkingTariffRepository, InMemoryParkingTariffRepository>();
-        builder.Services.AddSingleton<ICameraCaptureRepository, InMemoryCameraCaptureRepository>();
-        builder.Services.AddSingleton<IParkingGateService, MemoryParkingGateService>();
-        builder.Services.AddSingleton<IParkingUnitOfWork, InMemoryParkingUnitOfWork>();
+        builder.Services.AddParkingEfModule(builder.Configuration);
+        //Tymczasowa implementacja w pamięci
+        builder.Services.AddParkingMemoryModule();
 
         builder.Services.AddExceptionHandler<ProblemDetailsExceptionHandler>();    
         builder.Services.AddProblemDetails();

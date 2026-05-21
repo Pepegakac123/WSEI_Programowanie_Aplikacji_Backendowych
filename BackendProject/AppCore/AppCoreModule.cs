@@ -20,7 +20,7 @@ public static class AppCoreModule
         services.AddFluentValidationAutoValidation();
 
         // Rejestracja AutoMapper
-        services.AddAutoMapper(typeof(GateMappingProfile).Assembly);
+        services.AddAutoMapper(cfg => cfg.AddMaps(typeof(AppCoreModule)));
         
         return services;
     }
