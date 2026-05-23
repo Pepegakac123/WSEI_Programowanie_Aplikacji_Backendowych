@@ -3,15 +3,13 @@ using Infrastructure.EntityFramework.Context;
 
 namespace Infrastructure.EntityFramework.UnitOfWork;
 
-public class EfParkingUnitOfWork(IParkingGateRepository gatesRepository, ParkingDbContext context) : IParkingUnitOfWork
+public class EfParkingUnitOfWork(IParkingGateRepository gatesRepository, IVehicleRepository vehicleRepository, ICameraCaptureRepository cameraCaptureRepository, IParkingTariffRepository parkingTariffRepository, IParkingSessionRepository parkingSessionRepository, ParkingDbContext context) : IParkingUnitOfWork
 {
     public IParkingGateRepository Gates => gatesRepository;
-    
-    // Na razie zostawmy te właściwości rzucające błąd, dopóki nie zrobisz reszty repozytoriów EF:
-    public IVehicleRepository Vehicles => throw new NotImplementedException();
-    public IParkingSessionRepository Sessions => throw new NotImplementedException();
-    public IParkingTariffRepository Tariffs => throw new NotImplementedException();
-    public ICameraCaptureRepository CameraCaptures => throw new NotImplementedException();
+    public IVehicleRepository Vehicles => vehicleRepository;
+    public IParkingSessionRepository Sessions => parkingSessionRepository;
+    public IParkingTariffRepository Tariffs => parkingTariffRepository;
+    public ICameraCaptureRepository CameraCaptures => cameraCaptureRepository;
     public Task<int> SaveChangesAsync() => context.SaveChangesAsync();
 
     public Task BeginTransactionAsync() => context.Database.BeginTransactionAsync();

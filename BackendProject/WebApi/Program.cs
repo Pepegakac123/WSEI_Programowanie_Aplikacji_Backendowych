@@ -17,8 +17,6 @@ public class Program
         builder.Services.AddAppCoreModule(builder.Configuration);
         builder.Services.AddControllers(); 
         builder.Services.AddParkingEfModule(builder.Configuration);
-        //Tymczasowa implementacja w pamięci
-        builder.Services.AddParkingMemoryModule();
 
         builder.Services.AddExceptionHandler<ProblemDetailsExceptionHandler>();    
         builder.Services.AddProblemDetails();
