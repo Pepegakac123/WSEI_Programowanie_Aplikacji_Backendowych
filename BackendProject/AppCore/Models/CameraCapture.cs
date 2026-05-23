@@ -12,12 +12,4 @@ public class CameraCapture : EntityBase
     public string? ImagePath { get; set; }
     public CaptureType CaptureType { get; set; }
     public DateTime CapturedAt { get; set; }
-
-    public static implicit operator CameraCaptureDto(CameraCapture entity) => new(
-        entity.LicensePlate,
-        entity.DetectedBrand,
-        entity.DetectedColor,
-        entity.GateName,
-        entity.ImagePath
-    );
 }

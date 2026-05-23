@@ -40,7 +40,7 @@ public class ParkingGateService(IParkingUnitOfWork unit, IMapper mapper) : IPark
 
     public async Task<ParkingGateDto> Add(CreateGateDto newGate)
     {
-        ParkingGate entity = newGate; 
+        var entity = mapper.Map<ParkingGate>(newGate);
         await unit.Gates.AddAsync(entity);
         await unit.SaveChangesAsync();
         return mapper.Map<ParkingGateDto>(entity);
@@ -85,24 +85,15 @@ public class ParkingGateService(IParkingUnitOfWork unit, IMapper mapper) : IPark
             throw new GateNotFoundException($"Gate with id={gateId} not found!");
         }
 
-        var capture = new CameraCapture
-        {
-            Id = Guid.NewGuid(),
-            LicensePlate = dto.LicensePlate,
-            DetectedBrand = dto.Brand,
-            DetectedColor = dto.Color,
-            ImagePath = dto.ImagePath,
-            CaptureType = Enum.Parse<CaptureType>(dto.CaptureType, true),
-            CapturedAt = DateTime.UtcNow,
-            GateName = gate.Name
-        };
+        var capture = mapper.Map<CameraCapture>(dto);
+        capture.GateName = gate.Name;
 
         await unit.CameraCaptures.AddAsync(capture);
         gate.CameraCaptures.Add(capture);
     
         await unit.SaveChangesAsync();
 
-        return capture;
+        return mapper.Map<CameraCaptureDto>(capture);
     }
 
     public async Task<IEnumerable<CameraCaptureDto>> GetCaptures(Guid gateId)
@@ -112,7 +103,7 @@ public class ParkingGateService(IParkingUnitOfWork unit, IMapper mapper) : IPark
         {
             throw new GateNotFoundException($"Gate with id={gateId} not found!");
         }
-        return entity.CameraCaptures.Select(c => (CameraCaptureDto)c);
+        return mapper.Map<IEnumerable<CameraCaptureDto>>(entity.CameraCaptures);
     }
 
     public async Task DeleteCapture(Guid gateId, Guid captureId)
