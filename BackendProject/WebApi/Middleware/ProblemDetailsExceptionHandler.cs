@@ -10,18 +10,27 @@ public class ProblemDetailsExceptionHandler(
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext context, Exception exception, CancellationToken cancellationToken)
     {
-        if (exception is GateNotFoundException)
+        int statusCode = exception switch
+        {
+            GateNotFoundException => StatusCodes.Status404NotFound,
+            InvalidCredentialsException => StatusCodes.Status401Unauthorized,
+            TokenException => StatusCodes.Status401Unauthorized,
+            UserStatusException => StatusCodes.Status403Forbidden,
+            _ => 0
+        };
+
+        if (statusCode != 0)
         {
             logger.LogInformation($"Obsłużono wyjątek: {exception.Message}");
             
             var problem = factory.CreateProblemDetails(
                 context,
-                StatusCodes.Status400BadRequest,
+                statusCode,
                 title: "Błąd serwisu",
                 detail: exception.Message
             );
 
-            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            context.Response.StatusCode = statusCode;
             await context.Response.WriteAsJsonAsync(problem, cancellationToken);
             return true; 
         }

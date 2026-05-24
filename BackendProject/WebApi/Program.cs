@@ -2,12 +2,14 @@ using AppCore.Repositories;
 using AppCore.Services;
 using AppCore;
 using Infrastructure;
+using Infrastructure.Data;
+using Infrastructure.Security;
 using WebApi.Middleware;
 namespace WebApi;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -22,16 +24,30 @@ public class Program
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
 
+        builder.Services.AddJwt(builder.Configuration);
+        
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
+            using (var scope = app.Services.CreateScope())
+            {
+                var seeders = scope.ServiceProvider
+                    .GetServices<IDataSeeder>()
+                    .OrderBy(s => s.Order);
+
+                foreach (var seeder in seeders)
+                {
+                    await seeder.SeedAsync();
+                }
+            }
         }
 
         app.UseHttpsRedirection();
 
+        app.UseAuthentication();
         app.UseAuthorization();
         app.UseExceptionHandler();
         app.MapControllers();  

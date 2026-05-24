@@ -7,7 +7,6 @@ public interface ISystemUser
     string FirstName { get; }
     string LastName { get; }
     string FullName { get; }
-    string Department { get; }
     SystemUserStatus Status { get; }
     DateTime CreatedAt { get; }
 }

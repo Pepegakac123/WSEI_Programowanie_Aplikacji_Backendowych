@@ -1,6 +1,13 @@
 namespace AppCore.Authorization;
 
-public class AppPolicies
+public enum AppPolicies
 {
-    
+    AdminOnly,
+    ActiveUser,
+    StaffOnly
+}
+
+public static class AppPoliciesExtensions
+{
+    public static string Name(this AppPolicies policy) => policy.ToString();
 }

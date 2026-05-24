@@ -1,5 +1,6 @@
 using AppCore.Models;
 using Infrastructure.EntityFramework.Entities;
+using Infrastructure.Security;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,6 +28,7 @@ public class ParkingDbContext : IdentityDbContext<AppUser,AppRole,string>
     public DbSet<ParkingSession>   ParkingSession { get; set; }
     public DbSet<ParkingTariff>  ParkingTariff { get; set; }
     public DbSet<Vehicle> Vehicle { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
     
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -36,7 +38,6 @@ public class ParkingDbContext : IdentityDbContext<AppUser,AppRole,string>
         {
             entity.Property(e => e.FirstName).IsRequired().HasMaxLength(100);
             entity.Property(e => e.LastName).IsRequired().HasMaxLength(100);
-            entity.Property(e => e.Department).HasMaxLength(100);
             entity.HasIndex(e => e.Email).IsUnique();
         });
         builder.Entity<AppRole>(entity =>

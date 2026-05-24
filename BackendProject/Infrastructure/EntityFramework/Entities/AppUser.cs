@@ -19,8 +19,6 @@ public class AppUser : IdentityUser, ISystemUser
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
     public string FullName => $"{FirstName} {LastName}";
-    public required string Email { get; set; }
-    public required string Department { get; set; }
     public required SystemUserStatus Status { get; set; }
     public DateTime CreatedAt { get; set;  }
     public DateTime? LastLoginAt { get; private set; }
