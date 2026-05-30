@@ -5,6 +5,8 @@ using Infrastructure;
 using Infrastructure.Data;
 using Infrastructure.Security;
 using WebApi.Middleware;
+using WebApi.Services;
+
 namespace WebApi;
 
 public class Program
@@ -21,6 +23,11 @@ public class Program
 
         builder.Services.AddExceptionHandler<ProblemDetailsExceptionHandler>();    
         builder.Services.AddProblemDetails();
+        
+        // mechanizm dostępu do HttpContext
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+        
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
 
