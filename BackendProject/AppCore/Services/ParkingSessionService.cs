@@ -137,5 +137,11 @@ public class ParkingSessionService(IParkingUnitOfWork unit, IMapper mapper) : IP
             ParkingMessages.FeeMsg(fee),
             GateAction.RequirePayment);
     }
+
+    public async Task<IEnumerable<ActiveParkingSessionDto>> GetActiveSessionsAsync()
+    {
+        var entity = await unit.Sessions.FindActiveSessionsAsync();
+        return mapper.Map<IEnumerable<ActiveParkingSessionDto>>(entity);
+    }
         
 }

@@ -44,7 +44,6 @@ Nowe endpointy dla bramek:
 - `POST /api/sessions/entry`: Przyjmuje dane z bramki wjazdowej.
 - `POST /api/sessions/exit`: Przyjmuje dane z bramki wyjazdowej.
 - `GET /api/sessions/active`: Lista aktywnych parkowań (dla administratora).
-- `POST /api/sessions/{id}/pay`: Symulacja płatności.
 
 ### B. Zabezpieczenia (JWT & Authorization)
 - Zastosowanie `[Authorize]` na endpointach.
