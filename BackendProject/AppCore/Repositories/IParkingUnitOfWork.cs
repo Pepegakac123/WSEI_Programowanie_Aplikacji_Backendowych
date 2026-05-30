@@ -9,6 +9,7 @@ public interface IParkingUnitOfWork
     IParkingSessionRepository Sessions { get; }
     IParkingTariffRepository Tariffs { get; }
     ICameraCaptureRepository CameraCaptures { get; }
+    IParkingSettingsRepository ParkingSettings { get; }
     
     Task<int> SaveChangesAsync();
     Task BeginTransactionAsync();

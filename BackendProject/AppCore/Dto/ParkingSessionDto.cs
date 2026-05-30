@@ -2,16 +2,24 @@ using System;
 
 namespace AppCore.Dto;
 
+public enum GateAction
+{
+    Open,
+    KeepClosed,
+    RequirePayment
+};
+
 public record ParkingEntryResultDto(
-    Guid SessionId,
+    Guid? SessionId,
     VehicleDto Vehicle,
     string GateName,
-    DateTime EntryTime,
-    string Message
+    DateTime? EntryTime,
+    string Message,
+    GateAction GateAction
 );
 
 public record ParkingExitResultDto(
-    Guid SessionId,
+    Guid? SessionId,
     VehicleDto Vehicle,
     string GateName,
     DateTime EntryTime,
@@ -20,7 +28,8 @@ public record ParkingExitResultDto(
     TimeSpan FreeParkingDuration,
     decimal Fee,
     bool WasCharged,
-    string Message
+    string Message,
+    GateAction GateAction
 );
 
 public record ActiveParkingSessionDto(

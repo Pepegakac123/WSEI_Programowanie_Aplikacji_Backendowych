@@ -33,6 +33,7 @@ public static class ParkingInfrastructureModule
         services.AddScoped<ICameraCaptureRepository, EfCameraCaptureRepository>();
         services.AddScoped<IParkingSessionRepository, EfParkingSessionRepository>();
         services.AddScoped<IParkingTariffRepository, EfParkingTariffRepository>();
+        services.AddScoped<IParkingSettingsRepository, EfParkingSettingsRepository>();
         
         // Serwisy i Unit of Work:
         services.AddScoped<IParkingUnitOfWork, EfParkingUnitOfWork>();

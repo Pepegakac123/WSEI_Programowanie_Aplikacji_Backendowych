@@ -12,5 +12,6 @@ public class ParkingSession : EntityBase
     public DateTime EntryTime { get; set; }
     public DateTime? ExitTime { get; set; }
     public decimal? ParkingFee { get; set; }
+    public DateTime? PaymentTime { get; set; }
     public bool IsActive { get; set; }
 }
