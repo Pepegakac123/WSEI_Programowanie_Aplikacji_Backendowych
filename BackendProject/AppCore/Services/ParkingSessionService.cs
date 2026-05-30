@@ -74,15 +74,19 @@ public class ParkingSessionService(IParkingUnitOfWork unit, IMapper mapper) : IP
         var vehicleDto = mapper.Map<VehicleDto>(vehicle);
 
         var totalDuration = DateTime.Now - currentSession.EntryTime;
-        // var tarrif = unit.Tariffs
-        var activeTariff = new ParkingTariff
+        
+        var activeTariff = await unit.Tariffs.GetActiveTariffAsync();
+        if (activeTariff == null)
         {
-            DailyMaxRate = 15,
-            FreeParkingDuration = TimeSpan.FromHours(1),
-            HourlyRate = 5,
-            IsActive = true,
-            Name = "tmpTarrif"
-        };
+            activeTariff = new ParkingTariff
+            {
+                Name = "Domyślna Taryfa Awaryjna",
+                FreeParkingDuration = TimeSpan.FromHours(1),
+                HourlyRate = 5,
+                DailyMaxRate = 15,
+                IsActive = true
+            };
+        }
         // SCENARIUSZ A: Zmieścił się w darmowym czasie
         if (totalDuration <= activeTariff.FreeParkingDuration)
         {
