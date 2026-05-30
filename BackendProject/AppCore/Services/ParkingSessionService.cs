@@ -13,11 +13,9 @@ public class ParkingSessionService(IParkingUnitOfWork unit, IMapper mapper) : IP
     public async Task<ParkingEntryResultDto> HandleEntry(string gateName, string licensePlate)
     {
         var gate = await unit.Gates.FindByNameAsync(gateName);
-        if (gate == null)
-        {
-            throw new GateNotFoundException("The gate does not exist.");
-        }
-
+        if (gate == null) throw new GateNotFoundException("The gate does not exist.");
+        if (gate.Type != GateType.Entry)  throw new InvalidGateOperationException("Ta bramka nie obsługuje wjazdów.");
+        
         var vehicle = await unit.Vehicles.FindByLicensePlateAsync(licensePlate);
         if (vehicle == null)
         {
@@ -53,10 +51,8 @@ public class ParkingSessionService(IParkingUnitOfWork unit, IMapper mapper) : IP
     public async Task<ParkingExitResultDto> HandleExit(string gateName, string licensePlate)
     {
         var gate = await unit.Gates.FindByNameAsync(gateName);
-        if (gate == null)
-        {
-            throw new GateNotFoundException("The gate does not exist.");
-        }
+        if (gate == null) throw new GateNotFoundException("The gate does not exist.");
+        if (gate.Type != GateType.Exit)  throw new InvalidGateOperationException("Ta bramka nie obsługuje wyjazdów.");
         
         var sessions = await unit.Sessions.FindActiveSessionsAsync();
         var currentSession = sessions?.FirstOrDefault(s => s.IsActive && s.Vehicle.LicensePlate == licensePlate);
@@ -97,7 +93,7 @@ public class ParkingSessionService(IParkingUnitOfWork unit, IMapper mapper) : IP
             return new ParkingExitResultDto(currentSession.Id,vehicleDto,gate.Name,currentSession.EntryTime,DateTime.Now,totalDuration,activeTariff.FreeParkingDuration,0,false,ParkingMessages.Goodbye,GateAction.Open);
         }
 
-// SCENARIUSZ B: Zapłacił w parkometrze i wyjeżdża w ciągu 10 minut
+        // SCENARIUSZ B: Zapłacił w parkometrze i wyjeżdża w ciągu 10 minut
         if (currentSession is { ParkingFee: not null, PaymentTime: not null })
         {
             var timeSincePayment = DateTime.Now - currentSession.PaymentTime.Value;
@@ -121,7 +117,7 @@ public class ParkingSessionService(IParkingUnitOfWork unit, IMapper mapper) : IP
             }
         }
 
-// SCENARIUSZ C: Przekroczył czas lub nie opłacił (żądanie zapłaty)
+        // SCENARIUSZ C: Przekroczył czas lub nie opłacił (żądanie zapłaty)
         var payableTime = totalDuration-activeTariff.FreeParkingDuration;
         decimal calculatedFee = (decimal)Math.Ceiling(payableTime.TotalHours) * activeTariff.HourlyRate;
         decimal fee = calculatedFee < activeTariff.DailyMaxRate  ? calculatedFee : activeTariff.DailyMaxRate;

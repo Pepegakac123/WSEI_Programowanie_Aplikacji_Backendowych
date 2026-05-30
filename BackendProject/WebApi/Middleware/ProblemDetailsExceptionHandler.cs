@@ -13,6 +13,7 @@ public class ProblemDetailsExceptionHandler(
         int statusCode = exception switch
         {
             GateNotFoundException => StatusCodes.Status404NotFound,
+            InvalidGateOperationException => StatusCodes.Status400BadRequest, 
             InvalidCredentialsException => StatusCodes.Status401Unauthorized,
             TokenException => StatusCodes.Status401Unauthorized,
             UserStatusException => StatusCodes.Status403Forbidden,

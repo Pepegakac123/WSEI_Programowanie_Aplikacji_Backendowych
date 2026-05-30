@@ -43,6 +43,7 @@ public static class ParkingInfrastructureModule
             .AddDefaultTokenProviders();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IDataSeeder, IdentityDbSeeder>();
+        services.AddScoped<IDataSeeder, ParkingDataSeeder>();
         
 
         return services;
