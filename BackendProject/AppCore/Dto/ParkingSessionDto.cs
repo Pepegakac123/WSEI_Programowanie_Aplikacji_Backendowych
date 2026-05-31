@@ -11,7 +11,7 @@ public enum GateAction
 
 public record ParkingEntryResultDto(
     Guid? SessionId,
-    VehicleDto Vehicle,
+    VehicleDto? Vehicle,
     string GateName,
     DateTime? EntryTime,
     string Message,
@@ -20,7 +20,7 @@ public record ParkingEntryResultDto(
 
 public record ParkingExitResultDto(
     Guid? SessionId,
-    VehicleDto Vehicle,
+    VehicleDto? Vehicle,
     string GateName,
     DateTime EntryTime,
     DateTime ExitTime,

@@ -1,5 +1,6 @@
 using AppCore.Validators;
 using AppCore.Mapper;
+using AppCore.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +22,8 @@ public static class AppCoreModule
 
         // Rejestracja AutoMapper
         services.AddAutoMapper(cfg => cfg.AddMaps(typeof(AppCoreModule)));
+        
+        services.AddScoped<IParkingSessionService, ParkingSessionService>();
         
         return services;
     }

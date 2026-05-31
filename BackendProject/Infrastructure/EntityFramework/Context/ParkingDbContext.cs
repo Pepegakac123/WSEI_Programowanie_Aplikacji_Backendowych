@@ -11,22 +11,25 @@ public class ParkingDbContext : IdentityDbContext<AppUser,AppRole,string>
 {
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-       optionsBuilder.UseSqlite("Data Source=parking.db");
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlite("Data Source=parking.db");
+        }
     }
 
     public ParkingDbContext()
     {
-        
+
     }
 
-    private readonly ICurrentUserService _currentUserService;
+    private readonly ICurrentUserService? _currentUserService;
 
     public ParkingDbContext(DbContextOptions<ParkingDbContext> options, ICurrentUserService currentUserService) 
         : base(options)
     {
         _currentUserService = currentUserService;
     }
-    
+
     public DbSet<CameraCapture>  CameraCapture { get; set; }
     public DbSet<ParkingGate>  ParkingGate { get; set; }
     public DbSet<ParkingSession>   ParkingSession { get; set; }
@@ -34,7 +37,8 @@ public class ParkingDbContext : IdentityDbContext<AppUser,AppRole,string>
     public DbSet<Vehicle> Vehicle { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<ParkingSettings> ParkingSettings { get; set; }
-    
+
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -56,7 +60,7 @@ public class ParkingDbContext : IdentityDbContext<AppUser,AppRole,string>
         {
             if (entry.State == EntityState.Added)
             {
-                entry.Entity.CreatedByUserId ??= _currentUserService.UserId;
+                entry.Entity.CreatedByUserId ??= _currentUserService?.UserId;
             }
         }
         return base.SaveChangesAsync(cancellationToken);

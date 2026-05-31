@@ -57,13 +57,15 @@ public class ParkingDataSeeder(ParkingDbContext context, ILogger<ParkingDataSeed
             { 
                 Id = Guid.NewGuid(), 
                 Name = "Wjazd 1", 
-                Type = GateType.Entry
+                Type = GateType.Entry,
+                IsOperational = true 
             },
             new ParkingGate 
             { 
                 Id = Guid.NewGuid(), 
                 Name = "Wyjazd 1",
-                Type = GateType.Exit
+                Type = GateType.Exit,
+                IsOperational = true 
             }
         );
         

@@ -23,11 +23,21 @@ public class ParkingSessionService(IParkingUnitOfWork unit, IMapper mapper) : IP
         }
         var vehicleDto = mapper.Map<VehicleDto>(vehicle);
         
-        var totalSpaces = await unit.ParkingSettings.GetTotalSpacesAsync();
-        var parkingSpacesTaken = await unit.Sessions.FindActiveSessionsAsync();
-        
-        if (totalSpaces - parkingSpacesTaken.Count() <= 0)
+        var activeSessions = await unit.Sessions.FindActiveSessionsAsync();
+
+        if (activeSessions.Any(s => s.Vehicle.LicensePlate == licensePlate))
         {
+            await LogCaptureAsync(gate.Name, licensePlate, vehicle.Brand, vehicle.Color, CaptureType.Entry);
+            await unit.SaveChangesAsync();
+            return new ParkingEntryResultDto(Guid.Empty, vehicleDto, gateName, null, "Pojazd znajduje się już na parkingu.", GateAction.KeepClosed);
+        }
+        
+        var totalSpaces = await unit.ParkingSettings.GetTotalSpacesAsync();
+        
+        if (totalSpaces - activeSessions.Count() <= 0)
+        {
+            await LogCaptureAsync(gate.Name, licensePlate, vehicle.Brand, vehicle.Color, CaptureType.Entry);
+            await unit.SaveChangesAsync();
             return new ParkingEntryResultDto(Guid.Empty, vehicleDto, gateName, null, ParkingMessages.NoAvailableSpaces, GateAction.KeepClosed);
         }
 
@@ -42,6 +52,7 @@ public class ParkingSessionService(IParkingUnitOfWork unit, IMapper mapper) : IP
         };
         
         await unit.Sessions.AddAsync(session);
+        await LogCaptureAsync(gate.Name, licensePlate, vehicle.Brand, vehicle.Color, CaptureType.Entry);
         await unit.SaveChangesAsync();
         
         return new ParkingEntryResultDto(session.Id, vehicleDto, gateName, session.EntryTime, ParkingMessages.Welcome, GateAction.Open);
@@ -56,6 +67,8 @@ public class ParkingSessionService(IParkingUnitOfWork unit, IMapper mapper) : IP
         
         if (currentSession == null)
         {
+            await LogCaptureAsync(gate.Name, licensePlate, "Nieznany", "Nieznany", CaptureType.Exit);
+            await unit.SaveChangesAsync();
             return new ParkingExitResultDto(Guid.Empty, null, gateName, DateTime.MinValue, DateTime.Now, 
                 TimeSpan.Zero, TimeSpan.Zero, 0, false, ParkingMessages.ForbbidenEntry, GateAction.KeepClosed);
         }
@@ -63,6 +76,8 @@ public class ParkingSessionService(IParkingUnitOfWork unit, IMapper mapper) : IP
         var vehicleDto = mapper.Map<VehicleDto>(currentSession.Vehicle);
         var totalDuration = DateTime.Now - currentSession.EntryTime;
         var activeTariff = await GetActiveTariffOrDefaultAsync();
+
+        await LogCaptureAsync(gate.Name, licensePlate, currentSession.Vehicle.Brand, currentSession.Vehicle.Color, CaptureType.Exit);
 
         // SCENARIUSZ A: Zmieścił się w darmowym czasie
         if (totalDuration <= activeTariff.FreeParkingDuration)
@@ -92,6 +107,7 @@ public class ParkingSessionService(IParkingUnitOfWork unit, IMapper mapper) : IP
         decimal calculatedFee = (decimal)Math.Ceiling(payableTime.TotalHours) * activeTariff.HourlyRate;
         decimal fee = calculatedFee < activeTariff.DailyMaxRate ? calculatedFee : activeTariff.DailyMaxRate;
         
+        await unit.SaveChangesAsync();
         return new ParkingExitResultDto(currentSession.Id, vehicleDto, gate.Name, currentSession.EntryTime, 
             DateTime.Now, totalDuration, activeTariff.FreeParkingDuration, fee, false, 
             ParkingMessages.FeeMsg(fee), GateAction.RequirePayment);
@@ -131,5 +147,21 @@ public class ParkingSessionService(IParkingUnitOfWork unit, IMapper mapper) : IP
         session.IsActive = false;
         session.ExitTime = DateTime.Now;
         await unit.SaveChangesAsync();
+    }
+
+    private async Task LogCaptureAsync(string gateName, string licensePlate, string brand, string color, CaptureType type)
+    {
+        var capture = new CameraCapture
+        {
+            Id = Guid.NewGuid(),
+            GateName = gateName,
+            LicensePlate = licensePlate,
+            DetectedBrand = brand,
+            DetectedColor = color,
+            ImagePath = $"/captures/{type.ToString().ToLower()}/{DateTime.Now:yyyyMMddHHmmss}_{licensePlate}.jpg",
+            CaptureType = type,
+            CapturedAt = DateTime.Now
+        };
+        await unit.CameraCaptures.AddAsync(capture);
     }
 }
