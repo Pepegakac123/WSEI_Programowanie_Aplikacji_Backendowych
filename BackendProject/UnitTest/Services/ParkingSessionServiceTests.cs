@@ -215,7 +215,7 @@ public class ParkingSessionServiceTests : IDisposable
         // Assert
         Assert.NotNull(result);
         Assert.Equal(GateAction.KeepClosed, result.GateAction);
-        Assert.Equal("Pojazd znajduje się już na parkingu.", result.Message);
+        Assert.Equal(ParkingMessages.CarAlreadyParked, result.Message);
         
         // Check if camera capture was logged for both attempts
         var captures = await _context.CameraCapture.Where(c => c.LicensePlate == licensePlate).ToListAsync();

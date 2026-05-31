@@ -29,7 +29,7 @@ public class ParkingSessionService(IParkingUnitOfWork unit, IMapper mapper) : IP
         {
             await LogCaptureAsync(gate.Name, licensePlate, vehicle.Brand, vehicle.Color, CaptureType.Entry);
             await unit.SaveChangesAsync();
-            return new ParkingEntryResultDto(Guid.Empty, vehicleDto, gateName, null, "Pojazd znajduje się już na parkingu.", GateAction.KeepClosed);
+            return new ParkingEntryResultDto(Guid.Empty, vehicleDto, gateName, null, ParkingMessages.CarAlreadyParked, GateAction.KeepClosed);
         }
         
         var totalSpaces = await unit.ParkingSettings.GetTotalSpacesAsync();

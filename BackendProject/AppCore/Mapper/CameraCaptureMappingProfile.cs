@@ -8,7 +8,9 @@ public class CameraCaptureMappingProfile : Profile
 {
     public CameraCaptureMappingProfile()
     {
-        CreateMap<CameraCapture, CameraCaptureDto>();
+        CreateMap<CameraCapture, CameraCaptureDto>()
+            .ForCtorParam("Brand", opt => opt.MapFrom(src => src.DetectedBrand))
+            .ForCtorParam("Color", opt => opt.MapFrom(src => src.DetectedColor));
         
         CreateMap<CreateCameraCaptureDto, CameraCapture>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(_ => Guid.NewGuid()))
