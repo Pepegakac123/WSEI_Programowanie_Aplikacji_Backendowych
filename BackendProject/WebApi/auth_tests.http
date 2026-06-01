@@ -1,8 +1,7 @@
 @WebApi_HostAddress = http://localhost:5167
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IkY1QkFERTE0LTZDQzgtNDJBMi05QTQ0LTk4NDJEQTJEOTI4MCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImFkbWluQHBhcmtpbmcucGwiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9naXZlbm5hbWUiOiJBZGFtIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvc3VybmFtZSI6IkFkbWluIiwic3RhdHVzIjoiQWN0aXZlIiwianRpIjoiMzY1YTA5MTctNDJmMC00NGU2LWEyZDItNTZmYmI2OGQ0MDljIiwiaWF0IjoiMTc3OTYzMTMwOCIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluaXN0cmF0b3IiLCJuYmYiOjE3Nzk2MzEzMDgsImV4cCI6MTc3OTYzNDkwOCwiaXNzIjoiUGFya2luZ1NlcnZpY2VBcGlBcHAxNTYwNiIsImF1ZCI6IkFwcENsaWVudCJ9.oUgr4xgmhPZ_WdOdNa1GqPkBiV3XqrcIWfx0FyK_-ss
-@refreshToken = gcICthhXTJPXHE1GVOD45rBCCtWUaAfLKsSmoQzlTcDgSjbgjAwnieQdoFtcXjEuS7kUZbhQy6MwwRSxBNjqaA==
 
-### 1. Logowanie (użyj tylko jeśli token wygaśnie)
+### 1. Logowanie Administratora
+# Zwraca accessToken i refreshToken
 POST {{WebApi_HostAddress}}/api/auth/login
 Content-Type: application/json
 
@@ -13,26 +12,30 @@ Content-Type: application/json
 
 ###
 
-### 2. Pobranie moich danych (Me)
+### 2. Logowanie Pracownika (GateController)
+POST {{WebApi_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "jan.kowalski@parking.pl",
+  "password": "Staff@123!"
+}
+
+###
+
+### 3. Pobranie danych profilu (Wymaga wklejenia tokena)
+@token = TUTAJ_WKLEJ_ACCESS_TOKEN
 GET {{WebApi_HostAddress}}/api/auth/me
 Authorization: Bearer {{token}}
 
 ###
 
-### 3. Odświeżenie tokenu (Refresh)
+### 4. Odświeżenie tokenu
+# Wymaga obu tokenów z odpowiedzi logowania
 POST {{WebApi_HostAddress}}/api/auth/refresh
 Content-Type: application/json
 
 {
   "accessToken": "{{token}}",
-  "refreshToken": "{{refreshToken}}"
+  "refreshToken": "TUTAJ_WKLEJ_REFRESH_TOKEN"
 }
-
-###
-
-### 4. Wylogowanie (Revoke)
-POST {{WebApi_HostAddress}}/api/auth/revoke
-Authorization: Bearer {{token}}
-Content-Type: application/json
-
-"{{refreshToken}}"

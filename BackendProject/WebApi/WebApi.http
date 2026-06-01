@@ -6,46 +6,37 @@ Accept: application/json
 
 ###
 
-# 2. Pobierz bramkę wjazdową (Stałe ID: Entry Gate)
+# 2. Pobierz bramkę "Wjazd 1" (Stałe ID z Seeder'a)
 GET {{WebApi_HostAddress}}/api/gates/52f48199-bc0a-477c-afbe-78b59aced549
 Accept: application/json
 
 ###
 
-# 3. Pobierz bramkę wyjazdową (Stałe ID: Exit Gate)
+# 3. Pobierz bramkę "Wyjazd 1" (Stałe ID z Seeder'a)
 GET {{WebApi_HostAddress}}/api/gates/1984c840-e04a-464f-8cad-861ef2e7abd1
 Accept: application/json
 
 ###
 
-# 4. Dodaj nową bramkę
+# 4. Dodaj nową bramkę (Wymaga bycia zalogowanym - Staff/Admin)
+# Dodaj nagłówek Authorization po zalogowaniu w auth_tests.http
 POST {{WebApi_HostAddress}}/api/gates
 Content-Type: application/json
 
 {
   "name": "Brama A1",
-  "location" : "Sektor 1",
+  "location" : "Sektor Zachodni",
   "type": "Entry"
 }
 
 ###
 
-# 4.2. Dodaj nową bramkę zły name
+# 5. Walidacja (Błędna nazwa - znaki specjalne)
 POST {{WebApi_HostAddress}}/api/gates
 Content-Type: application/json
 
 {
-  "name": "Brama_A1",
+  "name": "Brama_#1",
   "location" : "Sektor 1",
   "type": "Entry"
-}
-###
-
-# 5. Edytuj bramkę wjazdową
-PUT {{WebApi_HostAddress}}/api/gates/52f48199-bc0a-477c-afbe-78b59aced549
-Content-Type: application/json
-
-{
-  "name": "Wjazd Glowny",
-  "type": "Both"
 }
