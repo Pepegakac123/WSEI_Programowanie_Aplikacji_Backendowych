@@ -18,7 +18,8 @@ namespace UnitTest.Services;
 
 public class TestCurrentUserService : ICurrentUserService
 {
-    public string? UserId => "test-user-id";
+    public string? UserId { get; set; } = "test-user-id";
+    public bool IsAdmin { get; set; } = false;
 }
 public class ParkingSessionServiceTests : IDisposable
 {

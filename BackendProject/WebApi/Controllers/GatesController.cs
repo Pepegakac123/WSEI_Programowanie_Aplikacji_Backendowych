@@ -2,20 +2,25 @@ using Microsoft.AspNetCore.Mvc;
 using AppCore.Services;  
 using AppCore.Dto;
 using System;
-using System.Threading.Tasks; 
+using System.Threading.Tasks;
+using AppCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApi.Controllers; 
 
 [ApiController]
 [Route("/api/[controller]")]
+[Authorize(Policy = nameof(AppPolicies.StaffOnly))]
 public class GatesController(IParkingGateService service) : ControllerBase
 {
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetAllGates([FromQuery] int page = 1, [FromQuery] int size = 10)
     {
         return Ok(await service.GetPaged(page, size));
     }
 
+    [AllowAnonymous]
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetGate(Guid id)
     {
@@ -27,6 +32,7 @@ public class GatesController(IParkingGateService service) : ControllerBase
         return Ok(dto);
     }
 
+    [AllowAnonymous]
     [HttpGet("name/{name}")]
     public async Task<IActionResult> GetByName(string name)
     {

@@ -19,6 +19,7 @@ public class ParkingGateServiceTests : IDisposable
     private readonly SqliteConnection _connection;
     private readonly ParkingDbContext _context;
     private readonly IParkingGateService _service;
+    private readonly TestCurrentUserService _currentUserService;
 
     public ParkingGateServiceTests()
     {
@@ -29,7 +30,8 @@ public class ParkingGateServiceTests : IDisposable
             .UseSqlite(_connection)
             .Options;
 
-        _context = new ParkingDbContext(options, new TestCurrentUserService());
+        _currentUserService = new TestCurrentUserService();
+        _context = new ParkingDbContext(options, _currentUserService);
         _context.Database.EnsureCreated();
 
         var services = new ServiceCollection();
@@ -51,7 +53,7 @@ public class ParkingGateServiceTests : IDisposable
             _context
         );
 
-        _service = new ParkingGateService(unitOfWork, mapper);
+        _service = new ParkingGateService(unitOfWork, mapper, _currentUserService);
     }
 
     [Fact]
@@ -152,6 +154,46 @@ public class ParkingGateServiceTests : IDisposable
 
         // Act & Assert
         await Assert.ThrowsAsync<GateNotFoundException>(() => _service.AddCapture(Guid.NewGuid(), captureDto));
+    }
+
+    [Fact]
+    public async Task Update_WhenUserIsNotOwner_ShouldThrowUnauthorizedAccessException()
+    {
+        // Arrange
+        // 1. Dodajemy bramkę jako pierwotny użytkownik
+        var gate = new ParkingGate { Id = Guid.NewGuid(), Name = "Brama", Type = GateType.Entry, Location = "Północ", IsOperational = true };
+        _context.ParkingGate.Add(gate);
+        await _context.SaveChangesAsync();
+
+        // 2. Symulujemy zmianę użytkownika na innego (nie admina)
+        _currentUserService.UserId = "other-user-id";
+        _currentUserService.IsAdmin = false;
+
+        var updateDto = new UpdateGateDto("Hacked Name", "Exit");
+
+        // Act & Assert
+        await Assert.ThrowsAsync<UnauthorizedAccessException>(() => _service.Update(gate.Id, updateDto));
+    }
+
+    [Fact]
+    public async Task Update_WhenUserIsAdmin_ShouldAllowModificationOfOthersGate()
+    {
+        // Arrange
+        var gate = new ParkingGate { Id = Guid.NewGuid(), Name = "Brama", Type = GateType.Entry, IsOperational = true };
+        _context.ParkingGate.Add(gate);
+        await _context.SaveChangesAsync();
+
+        _currentUserService.UserId = "admin-user-id";
+        _currentUserService.IsAdmin = true;
+
+        var updateDto = new UpdateGateDto("Admin Updated", "Exit");
+
+        // Act
+        var result = await _service.Update(gate.Id, updateDto);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal("Admin Updated", result.Name);
     }
 
     public void Dispose()

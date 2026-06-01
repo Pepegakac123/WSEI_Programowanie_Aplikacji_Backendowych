@@ -11,4 +11,5 @@ public class CurrentUserService : ICurrentUserService
         _httpContextAccessor = httpContextAccessor;
     }
     public string? UserId => _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+    public bool IsAdmin => _httpContextAccessor.HttpContext?.User?.IsInRole("Administrator") ?? false;
 }

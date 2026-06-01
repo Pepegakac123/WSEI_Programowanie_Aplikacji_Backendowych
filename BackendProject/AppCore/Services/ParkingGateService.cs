@@ -6,7 +6,7 @@ using AutoMapper;
 
 namespace AppCore.Services;
 
-public class ParkingGateService(IParkingUnitOfWork unit, IMapper mapper) : IParkingGateService
+public class ParkingGateService(IParkingUnitOfWork unit, IMapper mapper, ICurrentUserService currentUserService) : IParkingGateService
 {
     public async Task<ParkingGateDto?> GetById(Guid id)
     {
@@ -54,6 +54,8 @@ public class ParkingGateService(IParkingUnitOfWork unit, IMapper mapper) : IPark
             return null;
         }
 
+        EnsureOwnershipOrAdmin(entity.CreatedByUserId);
+
         entity.Name = updateGate.Name;
         entity.Type = Enum.Parse<GateType>(updateGate.Type, ignoreCase: true);
 
@@ -69,6 +71,7 @@ public class ParkingGateService(IParkingUnitOfWork unit, IMapper mapper) : IPark
         
         if (entity is not null)
         {
+            EnsureOwnershipOrAdmin(entity.CreatedByUserId);
             entity.IsOperational = isOperational;
             
             await unit.Gates.UpdateAsync(entity);
@@ -114,12 +117,24 @@ public class ParkingGateService(IParkingUnitOfWork unit, IMapper mapper) : IPark
             throw new GateNotFoundException($"Gate with id={gateId} not found!");
         }
 
+        EnsureOwnershipOrAdmin(entity.CreatedByUserId);
+
         var capture = entity.CameraCaptures.FirstOrDefault(c => c.Id == captureId);
         if (capture is not null)
         {
             entity.CameraCaptures.Remove(capture);
             await unit.CameraCaptures.RemoveByIdAsync(captureId);
             await unit.SaveChangesAsync();
+        }
+    }
+
+    private void EnsureOwnershipOrAdmin(string? createdByUserId)
+    {
+        if (currentUserService.IsAdmin) return;
+        
+        if (createdByUserId != currentUserService.UserId)
+        {
+            throw new UnauthorizedAccessException("Nie masz uprawnień do wykonania tej operacji na tym zasobie.");
         }
     }
 }

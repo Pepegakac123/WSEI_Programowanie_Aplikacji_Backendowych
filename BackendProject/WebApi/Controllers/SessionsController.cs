@@ -12,12 +12,14 @@ public record ParkingEntryAndExitRequest(string GateName, string LicensePlate);
 [Route("api/[controller]")]
 public class SessionsController(IParkingSessionService service) : ControllerBase
 {
+    [AllowAnonymous]
     [HttpPost("entry")]
     public async Task<IActionResult> HandleEntry([FromBody] ParkingEntryAndExitRequest request)
     {
         var result = await service.HandleEntry(request.GateName, request.LicensePlate);
         return Ok(result);
     }
+    [AllowAnonymous]
     [HttpPost("exit")]
     public async Task<IActionResult> HandleExit([FromBody] ParkingEntryAndExitRequest request)
     {
