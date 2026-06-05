@@ -4,6 +4,7 @@ using AppCore;
 using Infrastructure;
 using Infrastructure.Data;
 using Infrastructure.Security;
+using Microsoft.EntityFrameworkCore;
 using WebApi.Middleware;
 using WebApi.Services;
 
@@ -41,6 +42,9 @@ public class Program
             app.MapOpenApi();
             using (var scope = app.Services.CreateScope())
             {
+                var context = scope.ServiceProvider.GetRequiredService<Infrastructure.EntityFramework.Context.ParkingDbContext>();
+                await context.Database.MigrateAsync();
+
                 var seeders = scope.ServiceProvider
                     .GetServices<IDataSeeder>()
                     .OrderBy(s => s.Order);

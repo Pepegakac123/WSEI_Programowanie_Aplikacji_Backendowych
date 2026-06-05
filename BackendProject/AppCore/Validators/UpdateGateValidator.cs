@@ -14,6 +14,7 @@ public class UpdateGateValidator : AbstractValidator<UpdateGateDto>
             .Matches(@"^[\p{L}\s\-\d]+$").WithMessage("Nazwa zawiera niedozwolone znaki.");
 
         RuleFor(x => x.Type)
+            .NotEmpty().WithMessage("Typ bramki jest wymagany.")
             .IsEnumName(typeof(GateType), caseSensitive: false).WithMessage("Niepoprawny typ bramki.");
     }
 }

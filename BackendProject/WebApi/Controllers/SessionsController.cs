@@ -1,12 +1,10 @@
 using AppCore.Authorization;
+using AppCore.Dto;
 using AppCore.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
-
-
-public record ParkingEntryAndExitRequest(string GateName, string LicensePlate);
 
 [ApiController]
 [Route("api/[controller]")]

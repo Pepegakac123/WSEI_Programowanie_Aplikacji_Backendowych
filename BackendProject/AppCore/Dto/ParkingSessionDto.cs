@@ -9,6 +9,8 @@ public enum GateAction
     RequirePayment
 };
 
+public record ParkingEntryAndExitRequest(string GateName, string LicensePlate);
+
 public record ParkingEntryResultDto(
     Guid? SessionId,
     VehicleDto? Vehicle,
