@@ -5,10 +5,14 @@ using AppCore.Models;
 using AppCore.Repositories;
 using AppCore.Utils;
 using AutoMapper;
+using FluentValidation;
 
 namespace AppCore.Services;
 
-public class ParkingSessionService(IParkingUnitOfWork unit, IMapper mapper) : IParkingSessionService
+public class ParkingSessionService(
+    IParkingUnitOfWork unit, 
+    IMapper mapper,
+    IValidator<ParkingSession> sessionValidator) : IParkingSessionService
 {
     public async Task<ParkingEntryResultDto> HandleEntry(string gateName, string licensePlate)
     {
@@ -50,6 +54,8 @@ public class ParkingSessionService(IParkingUnitOfWork unit, IMapper mapper) : IP
             EntryTime = DateTime.Now,
             IsActive = true
         };
+        
+        await sessionValidator.ValidateAndThrowAsync(session);
         
         await unit.Sessions.AddAsync(session);
         await LogCaptureAsync(gate.Name, licensePlate, vehicle.Brand, vehicle.Color, CaptureType.Entry);

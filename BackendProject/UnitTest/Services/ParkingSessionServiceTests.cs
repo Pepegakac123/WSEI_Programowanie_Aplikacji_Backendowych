@@ -4,7 +4,9 @@ using AppCore.Exceptions;
 using AppCore.Mapper;
 using AppCore.Models;
 using AppCore.Services;
+using AppCore.Validators;
 using AutoMapper;
+using FluentValidation;
 using Infrastructure.EntityFramework.Context;
 using Infrastructure.EntityFramework.Repositories;
 using Infrastructure.EntityFramework.UnitOfWork;
@@ -56,8 +58,9 @@ public class ParkingSessionServiceTests : IDisposable
             new EfParkingSettingsRepository(_context),
             _context
         );
-        
-        _service = new ParkingSessionService(unitOfWork, mapper);
+
+        var sessionValidator = new ParkingSessionValidator();
+        _service = new ParkingSessionService(unitOfWork, mapper, sessionValidator);
 
         SeedDatabase();
     }
