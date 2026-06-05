@@ -10,6 +10,7 @@ using Infrastructure.EntityFramework.UnitOfWork;
 using Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -71,6 +72,23 @@ public static class ParkingInfrastructureModule
                     ValidAudience = jwtOptions.Audience,
                     IssuerSigningKey = jwtOptions.GetSymmetricKey(),
                     ClockSkew = TimeSpan.Zero 
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnChallenge = async context =>
+                    {
+                        context.HandleResponse();
+                        context.Response.StatusCode = 401;
+                        context.Response.ContentType = "application/json";
+                        var result = System.Text.Json.JsonSerializer.Serialize(new
+                        {
+                            status = 401,
+                            title = "Unauthorized",
+                            detail = "Brak autoryzacji lub niepoprawny token."
+                        });
+                        await context.Response.WriteAsync(result);
+                    }
                 };
             });
 

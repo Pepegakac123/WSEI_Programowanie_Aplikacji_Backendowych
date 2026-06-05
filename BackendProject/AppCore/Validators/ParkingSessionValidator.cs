@@ -27,6 +27,11 @@ public class ParkingSessionValidator : AbstractValidator<ParkingSession>
             .GreaterThanOrEqualTo(0)
             .When(x => x.ParkingFee.HasValue)
             .WithMessage("Opłata parkingowa nie może być ujemna.");
+
+        RuleFor(x => x.PaymentTime)
+            .GreaterThanOrEqualTo(x => x.EntryTime)
+            .When(x => x.PaymentTime.HasValue)
+            .WithMessage("Czas płatności nie może być wcześniejszy niż czas wjazdu.");
     }
 }
 

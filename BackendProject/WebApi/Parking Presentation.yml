@@ -1,0 +1,207 @@
+opencollection: 1.0.0
+info:
+  name: Parking Presentation - Zadanie 21
+config:
+  proxy:
+    inherit: true
+  environments:
+    - name: Parking-Local
+      variables:
+        - name: token
+          secret: true
+        - name: baseUrl
+          value: http://localhost:5167
+items:
+  - info:
+      name: 0. Inicjalizacja
+      type: folder
+    items:
+      - info:
+          name: Logowanie Admina (Seeder)
+          type: http
+          seq: 1
+        http:
+          method: POST
+          url: '{{baseUrl}}/api/auth/login'
+          body:
+            type: json
+            data: '{ "email": "admin@parking.pl", "password": "Admin@123!" }'
+        runtime:
+          scripts:
+            - type: after-response
+              code: |-
+                const data = res.getBody();
+                if (data.accessToken) {
+                  bru.setEnvVar("token", data.accessToken);
+                }
+        docs: Loguje administratora i automatycznie zapisuje token do zmiennej {{token}}.
+  - info:
+      name: 1. Bezpieczeństwo i Walidacja
+      type: folder
+    items:
+      - info:
+          name: Walidacja DTO (Puste dane)
+          type: http
+          seq: 1
+        http:
+          method: POST
+          url: '{{baseUrl}}/api/sessions/entry'
+          body:
+            type: json
+            data: '{ "gateName": "", "licensePlate": "" }'
+          auth:
+            type: bearer
+            token: '{{token}}'
+        docs: Pokazuje działanie FluentValidation na poziomie wejścia do API.
+      - info:
+          name: Weryfikacja Bramki (Nieistniejąca)
+          type: http
+          seq: 2
+        http:
+          method: POST
+          url: '{{baseUrl}}/api/sessions/entry'
+          body:
+            type: json
+            data: '{ "gateName": "Brama Widmo", "licensePlate": "PO-WALID" }'
+          auth:
+            type: bearer
+            token: '{{token}}'
+        docs: System sprawdza, czy bramka fizyczna jest zarejestrowana w bazie.
+  - info:
+      name: 2. Zarządzanie Wjazdem
+      type: folder
+    items:
+      - info:
+          name: Pomyślny Wjazd (Automatyczne Rozpoznanie)
+          type: http
+          seq: 1
+        http:
+          method: POST
+          url: '{{baseUrl}}/api/sessions/entry'
+          body:
+            type: json
+            data: '{ "gateName": "Wjazd 1", "licensePlate": "PO-PRESENT" }'
+          auth:
+            type: bearer
+            token: '{{token}}'
+        docs: Tworzy nową sesję i rozpoznaje markę/kolor auta.
+      - info:
+          name: Blokada - Pojazd już parkuje
+          type: http
+          seq: 2
+        http:
+          method: POST
+          url: '{{baseUrl}}/api/sessions/entry'
+          body:
+            type: json
+            data: '{ "gateName": "Wjazd 1", "licensePlate": "PO-PRESENT" }'
+          auth:
+            type: bearer
+            token: '{{token}}'
+        docs: Zapobiega nadużyciom i błędom w systemie.
+      - info:
+          name: Blokada - Brak Miejsc (docs)
+          type: http
+          seq: 3
+        http:
+          method: POST
+          url: '{{baseUrl}}/api/sessions/entry'
+          body:
+            type: json
+            data: '{ "gateName": "Wjazd 1", "licensePlate": "PO-FULL" }'
+          auth:
+            type: bearer
+            token: '{{token}}'
+        docs: |-
+          WYMAGA SQL:
+          sqlite3 WebApi/parking.db "UPDATE ParkingSettings SET TotalSpaces = 0;"
+          PO TESTCIE PRZYWRÓĆ:
+          sqlite3 WebApi/parking.db "UPDATE ParkingSettings SET TotalSpaces = 50;"
+  - info:
+      name: 3. Wyjazd i Rozliczenia
+      type: folder
+    items:
+      - info:
+          name: Wyjazd Bezpłatny (Darmowe 15 min)
+          type: http
+          seq: 1
+        http:
+          method: POST
+          url: '{{baseUrl}}/api/sessions/exit'
+          body:
+            type: json
+            data: '{ "gateName": "Wyjazd 1", "licensePlate": "PO-PRESENT" }'
+          auth:
+            type: bearer
+            token: '{{token}}'
+        docs: Zamyka sesję, opłata 0zł.
+      - info:
+          name: 1. Wjazd dla (PO-TEST-OPLATA)
+          type: http
+          seq: 2
+        http:
+          method: POST
+          url: '{{baseUrl}}/api/sessions/entry'
+          body:
+            type: json
+            data: '{ "gateName": "Wjazd 1", "licensePlate": "PO-TEST-OPLATA" }'
+          auth:
+            type: bearer
+            token: '{{token}}'
+      - info:
+          name: 2. Wyjazd - Żądanie Zapłaty (docs)
+          type: http
+          seq: 3
+        http:
+          method: POST
+          url: '{{baseUrl}}/api/sessions/exit'
+          body:
+            type: json
+            data: '{ "gateName": "Wyjazd 1", "licensePlate": "PO-TEST-OPLATA" }'
+          auth:
+            type: bearer
+            token: '{{token}}'
+        docs: |-
+          PRZED wysłaniem (Symulacja 2h):
+          sqlite3 WebApi/parking.db "UPDATE ParkingSession SET EntryTime = datetime('now', 'localtime', '-2 hours') WHERE IsActive = 1 AND VehicleId = (SELECT Id FROM Vehicle WHERE LicensePlate = 'PO-TEST-OPLATA');"
+      - info:
+          name: 3. Wyjazd - Po Zapłacie (docs)
+          type: http
+          seq: 4
+        http:
+          method: POST
+          url: '{{baseUrl}}/api/sessions/exit'
+          body:
+            type: json
+            data: '{ "gateName": "Wyjazd 1", "licensePlate": "PO-TEST-OPLATA" }'
+          auth:
+            type: bearer
+            token: '{{token}}'
+        docs: |-
+          PRZED wysłaniem (Symulacja zapłaty):
+          sqlite3 WebApi/parking.db "UPDATE ParkingSession SET ParkingFee = 10, PaymentTime = datetime('now', 'localtime') WHERE IsActive = 1 AND VehicleId = (SELECT Id FROM Vehicle WHERE LicensePlate = 'PO-TEST-OPLATA');"
+  - info:
+      name: 4. Administracja i Audyt
+      type: folder
+    items:
+      - info:
+          name: Monitoring - Aktywne Sesje
+          type: http
+          seq: 1
+        http:
+          method: GET
+          url: '{{baseUrl}}/api/sessions/active'
+          auth:
+            type: bearer
+            token: '{{token}}'
+      - info:
+          name: Audyt - Nieudana Próba (Bez Tokena)
+          type: http
+          seq: 2
+        http:
+          method: GET
+          url: '{{baseUrl}}/api/sessions/active'
+        docs: Pokazuje niestandardową odpowiedź JSON dla błędu 401.
+auth:
+  type: bearer
+  token: '{{token}}'
